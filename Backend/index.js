@@ -55,6 +55,7 @@ app.post("/bookingdetails", async (req, res) => {
   bookingdetails.car_name = req.body.BookingDetails.car_name;
   bookingdetails.car_description = req.body.BookingDetails.car_description;
   bookingdetails.car_fuel = req.body.BookingDetails.car_fuel;
+  bookingdetails.gmail = req.body.BookingDetails.gmail;
   bookingdetails.car_rent = req.body.BookingDetails.car_rent;
   bookingdetails.car_image = req.body.BookingDetails.car_image;
   bookingdetails.user_name = req.body.BookingDetails.name;
@@ -67,8 +68,10 @@ app.post("/bookingdetails", async (req, res) => {
   res.json(doc);
 });
 
-app.get("/getbookingdetails", async (req, res) => {
-  const c = await booking.find({});
+app.get("/getbookingdetails:name", async (req, res) => {
+  const s = req.params.name
+ 
+  const c = await booking.find({gmail:s.substring(1)});
   res.json(c);
 });
 

@@ -5,18 +5,19 @@ import Loader from "./loader";
 import axios from "axios";
 function Bookingdetails() {
     const [data,setData] = useState([]);
+    const [fe,setFe] = useState(false);
     {useEffect(() => {
-        axios.get("http://localhost:4000/getbookingdetails").then((res) => {
-         
+        axios.get(`http://localhost:4000/getbookingdetails:${sessionStorage.getItem("gmail")}`).then((res) => {
           setData(res.data);
+          setFe(true)
         });
       }, [])};
   return (
     <>
       <Navbar />
-      {data.length==0?<Loader/>:
-      <div className="container">
-        <table class="table table-stdiped">
+      {!fe?<Loader/>:fe && data.length==0 ?<center> <h1 className="mt-4">No Booking details found</h1><h2>please book a car to view history</h2></center>:
+      <div className="table-responsive">
+        <table class="table table-striped">
           <thead>
             <tr>
               <th scope="col">s.no</th>

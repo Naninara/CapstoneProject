@@ -9,18 +9,38 @@ import Navbar from "./navbar";
 function Cardetails() {
   const location = useLocation();
   let [BookingDetails, SetBookingDetails] = useState({
-    car_name:location.state.car_name,
-    car_fuel:location.state.car_fuel,
-    car_image:location.state.car_image,
-    car_rent:location.state.car_rent,
-    car_seating:location.state.car_seating,
+    car_name: location.state.car_name,
+    car_fuel: location.state.car_fuel,
+    car_image: location.state.car_image,
+    car_rent: location.state.car_rent,
+    car_seating: location.state.car_seating,
+    gmail: sessionStorage.getItem("gmail"),
     name: "",
     mobile: "",
     address: "",
     StartTime: "",
     EndTime: "",
   });
+  const check = () => {
+    const e = document.getElementsByTagName("input");
+    const s = document.getElementById("error");
+    for (let i = 0; i < e.length; i++) {
+      if (e[i].value == "") {
+        alert("please fill all details");
+        return false;
+      }
+    }
+    let d1 = new Date(e[4].value.substring(0, 10));
+    let d2 = new Date(e[5].value.substring(0, 10));
+
+    if ((d1 >= d2)) {
+      s.innerHTML = "end date must be after start date ";
+      return false;
+    }
+    return true;
+  };
   const HandleForm = (e) => {
+    console.log(BookingDetails);
     SetBookingDetails((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
@@ -29,43 +49,55 @@ function Cardetails() {
 
   const PostData = (e) => {
     e.preventDefault();
-
-    axios.post("http://localhost:4000/bookingdetails",{BookingDetails}).then((res)=>{
-      SetBookingDetails(res.data);
-      alert("booking successful please pay the payment")
-    }).catch(err=>{
-      console.log(err);
-    })
+    let a = check();
+    if (a) {
+      axios
+        .post("http://localhost:4000/bookingdetails", { BookingDetails })
+        .then((res) => {
+          SetBookingDetails(res.data);
+          alert("booking successful please pay the payment");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    return;
   };
   let FormData = (
     <div>
       <form onSubmit={PostData}>
-        <TextField
-          className="IN"
+        <input
+          required
+          className="form-control"
           id="outlined-basic"
           label="Name"
           name="name"
+          placeholder="enter your name"
           variant="outlined"
           onChange={HandleForm}
         />
         <br />
         <br />
-        <TextField
-          className="IN"
+        <input
+          required
+          className="form-control"
           name="mobile"
           id="outlined-basic"
+          placeholder="enter your mobile number"
           label="Mobile Number"
           variant="outlined"
           onChange={HandleForm}
         />
         <br />
         <br />
-        <TextField
+        <input
+          required
+          type="textarea"
           name="address"
-          className="IN"
+          className="form-control"
           id="outlined-textarea"
           label="Address"
-          placeholder="Placeholder"
+          placeholder="Address"
           onChange={HandleForm}
           multiline
         />
@@ -78,6 +110,7 @@ function Cardetails() {
         >
           <label htmlFor="StDate">From Date</label>
           <input
+            required
             name="StartTime"
             id="StDate"
             type="datetime-local"
@@ -91,7 +124,7 @@ function Cardetails() {
           />
           <label htmlFor="StDate">To Date</label>
           <input
-          required
+            required
             name="EndTime"
             id="StDate"
             type="datetime-local"
@@ -106,19 +139,13 @@ function Cardetails() {
         </div>
         <br />
         <br />
-        <button
-                style={{
-                  marginBlockStart: "1%",
-                  marginInlineStart: "0%",
-                }}
-                className="btn btn-primary"
-                data-bs-target="#exampleModalToggle2"
-                data-bs-toggle="modal"
-                
-                type="submit"
-              >
-                Go to Payment
-              </button>
+        <div id="error"></div>
+        <input
+          className="btn btn-primary"
+          type="submit"
+          name=""
+          value="submit"
+        />
       </form>
     </div>
   );
@@ -127,7 +154,6 @@ function Cardetails() {
     <>
       <Navbar />
 
-      
       <div className="singlecarmain">
         <div className="carbooking">
           <div className="carimg">
@@ -222,38 +248,6 @@ function Cardetails() {
               }}
             >
               {FormData}
-              
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        className="modal fade"
-        id="exampleModalToggle2"
-        aria-hidden="true"
-        aria-labelledby="exampleModalToggleLabel2"
-        tabIndex="-1"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">
-                Payment
-              </h1>
-              <button
-                type="button"
-                className="btn-close bg-light"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">For rent total amount is Rs{location.state.car_rent}/-</div>
-            <div className="modal-footer">
-              <Link to="/payment">
-              <button className="btn btn-primary" data-bs-dismiss="modal">
-                Proceed to payment
-              </button>
-              </Link>
             </div>
           </div>
         </div>

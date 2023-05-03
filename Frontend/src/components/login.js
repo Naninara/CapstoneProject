@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { useState,useEffect } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Dashboard from "./dashboard";
 import axios from "axios";
 function Login() {
@@ -8,15 +8,15 @@ function Login() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loginType, setLoginType] = useState("");
   const [auth, setAuth] = useState("");
-  const [database,setDatabase]= useState([]);
-
-  {useEffect(() => {
-    axios.get("http://localhost:4000/getsignupdetails").then((res) => {
-     
-      setDatabase(res.data);
-    });
-  }, [])};
- 
+  const [database, setDatabase] = useState([]);
+  const navigate = useNavigate();
+  {
+    useEffect(() => {
+      axios.get("http://localhost:4000/getsignupdetails").then((res) => {
+        setDatabase(res.data);
+      });
+    }, []);
+  }
 
   const errors = {
     gmail: "invalid gmail",
@@ -27,13 +27,15 @@ function Login() {
     event.preventDefault();
     var { gmail, pass } = document.forms[0];
     const userData = database.find((user) => user.gmail === gmail.value);
-    console.log(userData)
+    console.log(userData);
     if (userData) {
       if (userData.password !== pass.value) {
         setErrorMessages({ name: "pass", message: errors.pass });
       } else {
         // success
         setIsSubmitted(true);
+        sessionStorage.setItem("gmail", userData.gmail);
+        sessionStorage.setItem("auth", "true");
         setLoginType(userData.type);
       }
     } else {
@@ -48,53 +50,45 @@ function Login() {
 
   const renderForm = (
     <div className="row box">
-    <div className="col-md-3">
-      <div class="form-container">
-      <p class="title">Welocome to Rent it</p>
-        <p class="title">Please Login</p>
-        <form class="form" onSubmit={handleSubmit}>
-          <div class="input-group">
-            <label for="username">Gmail</label>
-            <input type="email"  id="username" placeholder="" name="gmail" />
-            {renderErrorMessage("uname")}
-          </div>
-          <div class="input-group">
-            <label for="password">Password</label>
-            <input
-              type="password"
-              name="pass"
-              id="password"
-              placeholder=""
-            />
-             {renderErrorMessage("pass")}
-            <div class="forgot">
-            <Link rel="noopener noreferrer" to="/forgotpassword">
-                Forgot Password ?
-              </Link>
+      <div className="col-md-3">
+        <div class="form-container">
+          <p class="title">Welocome to Rent it</p>
+          <p class="title">Please Login</p>
+          <form class="form" onSubmit={handleSubmit}>
+            <div class="input-group">
+              <label for="username">Gmail</label>
+              <input type="email" id="username" placeholder="" name="gmail" />
+              {renderErrorMessage("uname")}
             </div>
-          </div>
-          
-            <button class="sign" type="submit">Sign in</button>
-          
-        </form>
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input type="password" name="pass" id="password" placeholder="" />
+              {renderErrorMessage("pass")}
+              <div class="forgot">
+                <Link rel="noopener noreferrer" to="/forgotpassword">
+                  Forgot Password ?
+                </Link>
+              </div>
+            </div>
 
-        <p class="signup">
-          Don't have an account?
-          <Link to="/usersignup">
-            Sign up
-          </Link>
-        </p>
+            <button class="sign" type="submit">
+              Sign in
+            </button>
+          </form>
+
+          <p class="signup">
+            Don't have an account?
+            <Link to="/usersignup">Sign up</Link>
+          </p>
+        </div>
       </div>
     </div>
-  </div>
   );
 
   return (
     <>
-      {isSubmitted && loginType=="user"? (
-        <div>
-          {window.location.href="/dashboard"}
-        </div>
+      {sessionStorage.getItem("auth") == "true" ? (
+        <div>{navigate("/dashboard")}</div>
       ) : (
         <div className="app">{renderForm}</div>
       )}

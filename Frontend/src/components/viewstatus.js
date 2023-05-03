@@ -1,17 +1,34 @@
 import React from "react";
 import Navbar from "./navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-import { history } from "../config";
+import Loader from "./loader";
 function Viewstatus() {
+  const [feedback,setFeedback]=useState([]);
+  const[fe,setFe] = useState(false);
   const toDetails = (id) => {};
   const [feedbackDetails, SetfeedbackDetails] = useState({
     overallRating: "",
     Rent: "",
     suggestions: "",
+
   });
+{console.log(feedback)}
+  {useEffect(() => {
+    axios.get(`http://localhost:4000/getbookingdetails:${sessionStorage.getItem("gmail")}`).then((res) => {
+      setFeedback(res.data);
+      console.log(feedback)
+      setFe(true);
+    });
+  }, [])};
+
   const PostData = (e) => {
-    console.log(feedbackDetails);
+    e.preventDefault();
+    if(+feedbackDetails.overallRating>5 || +feedbackDetails.overallRating==NaN){
+      alert("rating must below 5 or please number only")
+      return;
+    }
   };
   const HandleForm = (e) => {
     console.log(feedbackDetails);
@@ -20,19 +37,21 @@ function Viewstatus() {
       [e.target.name]: e.target.value,
     }));
   };
+  let Empty = (<h1>No booking details aviliable</h1>);
   let FormData = (
     <div>
-      <form >
+      <form onSubmit={PostData}>
         <div class="form-group">
           <label>Overall Rating</label>
-          
-          <select class="form-control" id="exampleFormControlSelect1">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
+
+          <input
+            type="text"
+            class="form-control"
+            id="exampleFormControlSelect1"
+            placeholder="please enter rating from 1 to 5 " 
+            name="overallRating"
+            onChange={HandleForm} 
+          ></input>
         </div>
         <br />
         <div class="form-group">
@@ -59,24 +78,26 @@ function Viewstatus() {
         </div>
         <br />
         <input
-                type="submit"
-                style={{
-                  marginBlockStart: "1%",
-                  marginInlineStart: "0%",
-                }}
-                className="btn btn-primary"
-                data-bs-target="#exampleModalToggle2"
-                data-bs-toggle="modal"
-                
-              />
+          type="submit"
+          style={{
+            marginBlockStart: "1%",
+            marginInlineStart: "0%",
+          }}
+          className="btn btn-primary"
+          data-bs-target="#exampleModalToggle2"
+          data-bs-toggle="modal"
+        />
       </form>
     </div>
   );
   return (
     <>
-      <div><Navbar/></div>
+ 
+      <div>
+        <Navbar />
+      </div>
       <div className="car-cards row">
-        {history.map((ele) => {
+        {!fe?<Loader/>:fe && feedback.length==0 ?<center> <h1 className="mt-4">No Booking details found</h1><h2>please book a car to give feedback</h2></center>: feedback.map((ele) => {
           return (
             <article className="single-card" key={ele.id}>
               <div className="temporary_text">
@@ -85,8 +106,8 @@ function Viewstatus() {
               <div className="card_content">
                 <span className="card_title">{ele.car_name}</span>
                 <hr />
-                <span className="card_subtitle">{ele.rent_date}</span>
-                <span className="card_subtitle">{ele.return_date}</span>
+                <span className="card_subtitle">Rented on: {ele.start_date.substring(0,10)}</span>
+                <span className="card_subtitle">Returned on :{ele.end_date.substring(0,10)}</span>
                 <button
                   type="button"
                   className="btn btn-outline-primary btn-outline-1 feedback-btn"
@@ -143,9 +164,6 @@ function Viewstatus() {
               }}
             >
               {FormData}
-              
-                
-              
             </div>
           </div>
         </div>
