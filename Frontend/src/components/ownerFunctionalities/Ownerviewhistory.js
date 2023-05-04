@@ -30,7 +30,7 @@ function Ownerviewhistory() {
             <h2>please book a car to view history</h2>
           </center>
         ) : (
-          <div className="table-responsive">
+          <div className="table-responsive  container">
             <table class="table table-striped">
               <thead>
                 <tr>

@@ -16,6 +16,8 @@ const signup = require("./models/userdetails");
 
 const ownersignup = require("./models/ownerDetails");
 
+const adminsignup = require("./models/admindetails");
+
 // Database connection
 main().catch((err) => console.log(err));
 async function main() {
@@ -78,7 +80,7 @@ app.get("/getbookingdetails:name", async (req, res) => {
 });
 
 app.get("/getbookingdetails", async (req, res) => {
-  const c = await booking.find({ });
+  const c = await booking.find({});
   res.json(c);
 });
 
@@ -118,5 +120,23 @@ app.get("/getownersignupdetails", async (req, res) => {
   res.json(c);
 });
 
+// Admindetails
+
+app.post("/adminsignup", async (req, res) => {
+  let details = new adminsignup();
+  details.name = req.body.signup.name;
+  details.gmail = req.body.signup.gmail;
+  details.password = req.body.signup.password;
+  details.type = req.body.signup.type;
+  const docs = await details.save();
+  console.log(docs);
+  res.json(docs);
+});
+
+app.get("/getadminsignupdetails", async (req, res) => {
+  const c = await adminsignup.find({});
+  console.log(c);
+  res.json(c);
+});
 
 app.listen(4000, () => console.log("The Server is Running..............."));
