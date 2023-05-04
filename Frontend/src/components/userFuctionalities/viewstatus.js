@@ -14,7 +14,7 @@ function Viewstatus() {
     suggestions: "",
 
   });
-{console.log(feedback)}
+
   {useEffect(() => {
     axios.get(`http://localhost:4000/getbookingdetails:${sessionStorage.getItem("gmail")}`).then((res) => {
       setFeedback(res.data);

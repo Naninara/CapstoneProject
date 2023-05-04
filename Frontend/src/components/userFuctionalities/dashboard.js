@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./navbar";
-import { carDetais } from "../config";
+import { carDetais } from "../../config";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loader from "./loader";
@@ -13,7 +13,7 @@ const Dashboard = () => {
     const employee = details.filter((incar) => incar._id == id);
     navigate("/cardetails", { state: employee[0] });
   };
-  
+
   return (
     <>
       {useEffect(() => {

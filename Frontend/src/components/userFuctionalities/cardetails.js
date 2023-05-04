@@ -33,7 +33,7 @@ function Cardetails() {
     let d1 = new Date(e[4].value.substring(0, 10));
     let d2 = new Date(e[5].value.substring(0, 10));
 
-    if ((d1 >= d2)) {
+    if (d1 >= d2) {
       s.innerHTML = "end date must be after start date ";
       return false;
     }
@@ -55,7 +55,7 @@ function Cardetails() {
         .post("http://localhost:4000/bookingdetails", { BookingDetails })
         .then((res) => {
           SetBookingDetails(res.data);
-          alert("booking successful please pay the payment");
+          alert("booking successful please pay the payment in booking section");
         })
         .catch((err) => {
           console.log(err);

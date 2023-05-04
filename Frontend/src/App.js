@@ -1,14 +1,20 @@
 import logo from "./logo.svg";
 import "./App.css";
-import Dashboard from "./components/dashboard";
-import Navbar from "./components/navbar";
-import Cardetails from "./components/cardetails";
+import Dashboard from "./components/userFuctionalities/dashboard";
+
+import Cardetails from "./components/userFuctionalities/cardetails";
 import { Router, BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./components/login";
-import Payment from './components/payment';
-import Viewstatus from "./components/viewstatus";
-import Usersignup from "./components/usersignup";
-import Bookingdetails from "./components/bookingdetails";
+import Login from "./components/userFuctionalities/login";
+import Payment from "./components/userFuctionalities/payment";
+import Viewstatus from "./components/userFuctionalities/viewstatus";
+import Usersignup from "./components/userFuctionalities/usersignup";
+import Bookingdetails from "./components/userFuctionalities/bookingdetails";
+import Ownersignup from "./components/ownerFunctionalities/ownersignup";
+import OwnerDashboard from "./components/ownerFunctionalities/ownerDashboard";
+import OwnerCardetails from "./components/ownerFunctionalities/ownerCardetails";
+import OwnerviewStatus from "./components/ownerFunctionalities/OwnerviewStatus";
+import Ownerviewhistory from "./components/ownerFunctionalities/Ownerviewhistory";
+import Ownerpayment from "./components/ownerFunctionalities/Ownerpayment";
 function App() {
 
   
@@ -24,6 +30,15 @@ function App() {
           <Route path="/viewhistory" element={<Viewstatus />}></Route>
           <Route path="/usersignup" element={<Usersignup />}></Route>
           <Route path="/bookinghistory" element={<Bookingdetails />}></Route>
+
+
+          <Route path="/ownersignup" element={<Ownersignup />}></Route>
+          <Route path="/ownerdashboard" element={<OwnerDashboard />}></Route>
+          <Route path="/ownercardetails" element={<OwnerCardetails />}></Route>
+          <Route path="/ownerviewstatus" element={<OwnerviewStatus />}></Route>
+          <Route path="/ownerbookinghistory" element={<Ownerviewhistory />}></Route>
+          <Route path="/ownerpayments" element={<Ownerpayment />}></Route>
+          
         </Routes>
       </BrowserRouter>
     </div>

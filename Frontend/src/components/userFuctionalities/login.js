@@ -1,14 +1,15 @@
 import React from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Dashboard from "./dashboard";
+
 import axios from "axios";
 function Login() {
   const [errorMessages, setErrorMessages] = useState({});
-  const [isSubmitted, setIsSubmitted] = useState(false);
+ 
   const [loginType, setLoginType] = useState("");
   const [auth, setAuth] = useState("");
   const [database, setDatabase] = useState([]);
+  const [ownerdb,setOwnerdb] = useState([]);
   const navigate = useNavigate();
   {
     useEffect(() => {
@@ -18,9 +19,37 @@ function Login() {
     }, []);
   }
 
+  {
+    useEffect(() => {
+      axios.get("http://localhost:4000/getownersignupdetails").then((res) => {
+        setOwnerdb(res.data);
+      });
+    }, []);
+  }
+
   const errors = {
     gmail: "invalid gmail",
     pass: "invalid password",
+  };
+
+  const ownerSubmit = (event) => {
+    event.preventDefault();
+    var { gmail, pass } = document.forms[1];
+    const userData = ownerdb.find((user) => user.gmail === gmail.value);
+    if (userData) {
+      if (userData.password !== pass.value) {
+        setErrorMessages({ name: "pass", message: errors.pass });
+      } else {
+        // success
+        sessionStorage.setItem("gmail", userData.gmail);
+        sessionStorage.setItem("auth", "true");
+        sessionStorage.setItem("type",userData.type)
+        setLoginType(userData.type);
+      }
+    } else {
+      alert("no user found please register")
+      setErrorMessages({ name: "uname", message: errors.uname });
+    }
   };
 
   const handleSubmit = (event) => {
@@ -33,12 +62,13 @@ function Login() {
         setErrorMessages({ name: "pass", message: errors.pass });
       } else {
         // success
-        setIsSubmitted(true);
         sessionStorage.setItem("gmail", userData.gmail);
         sessionStorage.setItem("auth", "true");
+        sessionStorage.setItem("type",userData.type)
         setLoginType(userData.type);
       }
     } else {
+      alert("no user found please register")
       setErrorMessages({ name: "uname", message: errors.uname });
     }
   };
@@ -49,11 +79,43 @@ function Login() {
     );
 
   const renderForm = (
-    <div className="row box">
-      <div className="col-md-3">
+    <div className="box">
+      <div >
         <div class="form-container">
           <p class="title">Welocome to Rent it</p>
-          <p class="title">Please Login</p>
+          <p class="title">User Login</p>
+          <form class="form" >
+            <div class="input-group">
+              <label for="username">Gmail</label>
+              <input type="email" id="username" placeholder="" name="gmail" />
+              {renderErrorMessage("uname")}
+            </div>
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input type="password" name="pass" id="password" placeholder="" />
+              {renderErrorMessage("pass")}
+              <div class="forgot">
+                <Link rel="noopener noreferrer" to="/forgotpassword">
+                  Forgot Password ?
+                </Link>
+              </div>
+            </div>
+
+            <button class="sign" type="submit" onClick={handleSubmit}>
+              Sign in
+            </button>
+          </form>
+
+          <p class="signup">
+            Don't have an account?
+            <Link to="/usersignup">Sign up</Link>
+          </p>
+        </div>
+      </div>
+      <div >
+        <div class="form-container">
+          <p class="title">Welocome to Rent it</p>
+          <p class="title">Owner Login</p>
           <form class="form" onSubmit={handleSubmit}>
             <div class="input-group">
               <label for="username">Gmail</label>
@@ -71,14 +133,14 @@ function Login() {
               </div>
             </div>
 
-            <button class="sign" type="submit">
+            <button class="sign" type="submit" onClick={ownerSubmit}>
               Sign in
             </button>
           </form>
 
           <p class="signup">
             Don't have an account?
-            <Link to="/usersignup">Sign up</Link>
+            <Link to="/ownersignup">Sign up</Link>
           </p>
         </div>
       </div>
@@ -87,9 +149,11 @@ function Login() {
 
   return (
     <>
-      {sessionStorage.getItem("auth") == "true" ? (
+      {sessionStorage.getItem("auth") == "true" && sessionStorage.getItem("type")=="user" ? (
         <div>{navigate("/dashboard")}</div>
-      ) : (
+      ) :sessionStorage.getItem("auth") == "true" && sessionStorage.getItem("type")=="owner" ? (
+        <div>{navigate("/ownerdashboard")}</div>
+      ): (
         <div className="app">{renderForm}</div>
       )}
     </>

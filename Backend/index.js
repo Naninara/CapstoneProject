@@ -14,6 +14,8 @@ const booking = require("./models/booking");
 
 const signup = require("./models/userdetails");
 
+const ownersignup = require("./models/ownerDetails");
+
 // Database connection
 main().catch((err) => console.log(err));
 async function main() {
@@ -69,9 +71,14 @@ app.post("/bookingdetails", async (req, res) => {
 });
 
 app.get("/getbookingdetails:name", async (req, res) => {
-  const s = req.params.name
- 
-  const c = await booking.find({gmail:s.substring(1)});
+  const s = req.params.name;
+
+  const c = await booking.find({ gmail: s.substring(1) });
+  res.json(c);
+});
+
+app.get("/getbookingdetails", async (req, res) => {
+  const c = await booking.find({ });
   res.json(c);
 });
 
@@ -92,5 +99,24 @@ app.get("/getsignupdetails", async (req, res) => {
   const c = await signup.find({});
   res.json(c);
 });
+
+//Ownerscetion------------------------------
+
+app.post("/ownersignup", async (req, res) => {
+  let details = new ownersignup();
+  details.name = req.body.signup.name;
+  details.gmail = req.body.signup.gmail;
+  details.password = req.body.signup.password;
+  details.type = req.body.signup.type;
+  const docs = await details.save();
+  console.log(docs);
+  res.json(docs);
+});
+
+app.get("/getownersignupdetails", async (req, res) => {
+  const c = await ownersignup.find({});
+  res.json(c);
+});
+
 
 app.listen(4000, () => console.log("The Server is Running..............."));

@@ -1,6 +1,6 @@
 import React from 'react';
-import card1 from "../images/card1.png";
-import card2 from "../images/card2.png";
+import card1 from "../../images/card1.png";
+import card2 from "../../images/card2.png";
 import Navibar from './navbar';
 function Payment() {
   return (
