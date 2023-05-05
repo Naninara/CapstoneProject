@@ -6,6 +6,8 @@ const { MongoClient } = require("mongodb");
 const app = express();
 app.use(bodyParser.json());
 
+const PORT = process.env.PORT || 4000;
+
 // models
 
 const Users = require("./models/details");
@@ -139,4 +141,4 @@ app.get("/getadminsignupdetails", async (req, res) => {
   res.json(c);
 });
 
-app.listen(4000, () => console.log("The Server is Running..............."));
+app.listen(PORT, () => console.log("The Server is Running..............."));
